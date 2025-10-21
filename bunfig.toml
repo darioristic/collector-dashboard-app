@@ -1,0 +1,23 @@
+[install]
+# Automatski instaliraj peer dependencies
+peer = true
+
+# Koristi lockfile za reproduktibilne instalacije
+lockfile = true
+
+# Cache direktorijum
+cache = ".bun/cache"
+
+[install.scopes]
+# Scope za internal packages
+"@financial" = "workspace:*"
+
+[workspace]
+# Workspace konfiguracija
+packages = [
+  "apps/*",
+  "libs/*", 
+  "design/collector-dashboard",
+  "login",
+  "register"
+]

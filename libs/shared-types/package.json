@@ -1,0 +1,17 @@
+{
+  "name": "@financial/shared-types",
+  "version": "1.0.0",
+  "description": "Shared types and interfaces for financial microservices",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "zod": "^3.22.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.1.6"
+  }
+}

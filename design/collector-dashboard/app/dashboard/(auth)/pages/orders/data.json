@@ -1,0 +1,158 @@
+[
+  {
+    "id": 1001,
+    "customer": {
+      "name": "TechStart Inc.",
+      "email": "admin@techstart.com"
+    },
+    "price": "$9.99",
+    "type": "VPS Plan",
+    "status": "active",
+    "date": "Dec 15, 2024",
+    "icon": "Cpu",
+    "product_name": "Basic VPS - Ubuntu 22.04"
+  },
+  {
+    "id": 1002,
+    "customer": {
+      "name": "DataFlow Solutions",
+      "email": "dev@dataflow.com"
+    },
+    "price": "$24.99",
+    "type": "VPS Plan",
+    "status": "active",
+    "date": "Dec 14, 2024",
+    "icon": "Database",
+    "product_name": "Standard VPS - CentOS 8"
+  },
+  {
+    "id": 1003,
+    "customer": {
+      "name": "CloudWorks Ltd.",
+      "email": "support@cloudworks.com"
+    },
+    "price": "$49.99",
+    "type": "VPS Plan",
+    "status": "active",
+    "date": "Dec 13, 2024",
+    "icon": "Zap",
+    "product_name": "Premium VPS - Debian 11"
+  },
+  {
+    "id": 1004,
+    "customer": {
+      "name": "Enterprise Systems",
+      "email": "admin@enterprise.com"
+    },
+    "price": "$99.99",
+    "type": "VPS Plan",
+    "status": "active",
+    "date": "Dec 12, 2024",
+    "icon": "Building2",
+    "product_name": "Enterprise VPS - Windows Server 2022"
+  },
+  {
+    "id": 1005,
+    "customer": {
+      "name": "Managed Hosting Co.",
+      "email": "sales@managedhosting.com"
+    },
+    "price": "$39.99",
+    "type": "Managed Service",
+    "status": "active",
+    "date": "Dec 11, 2024",
+    "icon": "Settings",
+    "product_name": "Managed VPS - Rocky Linux"
+  },
+  {
+    "id": 1006,
+    "customer": {
+      "name": "AI Research Lab",
+      "email": "research@ailab.com"
+    },
+    "price": "$149.99",
+    "type": "GPU VPS",
+    "status": "active",
+    "date": "Dec 10, 2024",
+    "icon": "Gpu",
+    "product_name": "GPU VPS - AlmaLinux 8"
+  },
+  {
+    "id": 1007,
+    "customer": {
+      "name": "Backup Solutions",
+      "email": "backup@backupsolutions.com"
+    },
+    "price": "$4.99",
+    "type": "Service",
+    "status": "active",
+    "date": "Dec 09, 2024",
+    "icon": "Save",
+    "product_name": "Backup VPS Service"
+  },
+  {
+    "id": 1008,
+    "customer": {
+      "name": "Load Balancer Pro",
+      "email": "lb@loadbalancer.com"
+    },
+    "price": "$19.99",
+    "type": "Service",
+    "status": "active",
+    "date": "Dec 08, 2024",
+    "icon": "Share2",
+    "product_name": "Load Balancer Service"
+  },
+  {
+    "id": 1009,
+    "customer": {
+      "name": "SSL Security Corp.",
+      "email": "ssl@securitycorp.com"
+    },
+    "price": "$29.99",
+    "type": "Service",
+    "status": "active",
+    "date": "Dec 07, 2024",
+    "icon": "Shield",
+    "product_name": "SSL Certificate Bundle"
+  },
+  {
+    "id": 1010,
+    "customer": {
+      "name": "DDoS Protection Inc.",
+      "email": "ddos@protection.com"
+    },
+    "price": "$39.99",
+    "type": "Service",
+    "status": "active",
+    "date": "Dec 06, 2024",
+    "icon": "ShieldCheck",
+    "product_name": "DDoS Protection Service"
+  },
+  {
+    "id": 1011,
+    "customer": {
+      "name": "Monitoring Systems",
+      "email": "monitor@systems.com"
+    },
+    "price": "$9.99",
+    "type": "Service",
+    "status": "active",
+    "date": "Dec 05, 2024",
+    "icon": "Activity",
+    "product_name": "Server Monitoring Service"
+  },
+  {
+    "id": 1012,
+    "customer": {
+      "name": "Support Team Pro",
+      "email": "support@teampro.com"
+    },
+    "price": "$14.99",
+    "type": "Service",
+    "status": "active",
+    "date": "Dec 04, 2024",
+    "icon": "Headphones",
+    "product_name": "24/7 Support Service"
+  }
+]
