@@ -1,0 +1,301 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  directUrl  = env("DATABASE_URL_UNPOOLED")
+}
+
+enum CompanyType {
+  CUSTOMER
+  SUPPLIER
+  PARTNER
+  INTERNAL
+}
+
+enum RelationType {
+  SUPPLIER
+  CUSTOMER
+  PARTNER
+}
+
+enum RelationStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum UserRole {
+  ADMIN
+  USER
+  SERVICE
+}
+
+model Company {
+  id                 String         @id @default(uuid())
+  name               String
+  type               CompanyType
+  taxNumber          String         @unique
+  registrationNumber String?
+  email              String?
+  phone              String?
+  website            String?
+  address            String
+  city               String
+  country            String
+  postalCode         String?
+  notes              String?        @db.Text
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  deletedAt          DateTime?
+
+  contacts           Contact[]
+  sourceRelations    Relationship[] @relation("SourceCompany")
+  targetRelations    Relationship[] @relation("TargetCompany")
+  
+  offersCompany      Offer[]        @relation("OfferCompany")
+  offersCustomer     Offer[]        @relation("OfferCustomer")
+  ordersCompany      Order[]        @relation("OrderCompany")
+  ordersCustomer     Order[]        @relation("OrderCustomer")
+  invoicesCompany    Invoice[]      @relation("InvoiceCompany")
+  invoicesCustomer   Invoice[]      @relation("InvoiceCustomer")
+
+  @@index([type])
+  @@index([country])
+  @@index([deletedAt])
+  @@index([type, country])
+  @@index([createdAt(sort: Desc)])
+  @@map("companies")
+}
+
+model Contact {
+  id         String    @id @default(uuid())
+  companyId  String
+  firstName  String
+  lastName   String
+  email      String    @unique
+  phone      String?
+  position   String?
+  department String?
+  tags       String[]
+  notes      String?   @db.Text
+  isPrimary  Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+
+  company    Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([companyId])
+  @@index([email])
+  @@index([deletedAt])
+  @@index([companyId, isPrimary])
+  @@index([companyId, createdAt(sort: Desc)])
+  @@map("contacts")
+}
+
+model Relationship {
+  id                String         @id @default(uuid())
+  sourceCompanyId   String
+  targetCompanyId   String
+  relationType      RelationType
+  status            RelationStatus
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  sourceCompany     Company        @relation("SourceCompany", fields: [sourceCompanyId], references: [id], onDelete: Cascade)
+  targetCompany     Company        @relation("TargetCompany", fields: [targetCompanyId], references: [id], onDelete: Cascade)
+
+  @@unique([sourceCompanyId, targetCompanyId, relationType])
+  @@index([sourceCompanyId])
+  @@index([targetCompanyId])
+  @@index([relationType])
+  @@index([sourceCompanyId, status], name: "idx_relationships_source_active")
+  @@index([targetCompanyId, status], name: "idx_relationships_target_active")
+  @@map("relationships")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  role         UserRole
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([email])
+  @@index([role])
+  @@map("users")
+}
+
+model DomainEvent {
+  id           String   @id @default(uuid())
+  eventType    String
+  aggregateId  String
+  aggregateType String
+  payload      Json
+  metadata     Json?
+  occurredAt   DateTime @default(now())
+
+  @@index([aggregateId])
+  @@index([aggregateType])
+  @@index([eventType])
+  @@index([occurredAt])
+  @@map("domain_events")
+}
+
+enum OfferStatus {
+  DRAFT
+  SENT
+  ACCEPTED
+  REJECTED
+  EXPIRED
+}
+
+enum OrderStatus {
+  DRAFT
+  CONFIRMED
+  FULFILLED
+  CANCELLED
+}
+
+enum DeliveryStatus {
+  PREPARED
+  DELIVERED
+  SIGNED
+}
+
+enum InvoiceType {
+  ISSUED
+  RECEIVED
+  CREDIT_NOTE
+  PROFORMA
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+model Offer {
+  id          String       @id @default(uuid())
+  offerNo     String       @unique
+  companyId   String
+  customerId  String
+  items       Json
+  subtotal    Decimal      @db.Decimal(10, 2)
+  tax         Decimal      @db.Decimal(10, 2)
+  total       Decimal      @db.Decimal(10, 2)
+  currency    String       @default("EUR")
+  validUntil  DateTime
+  status      OfferStatus  @default(DRAFT)
+  notes       String?      @db.Text
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  company     Company      @relation("OfferCompany", fields: [companyId], references: [id], onDelete: Cascade)
+  customer    Company      @relation("OfferCustomer", fields: [customerId], references: [id], onDelete: Cascade)
+  orders      Order[]
+
+  @@index([companyId])
+  @@index([customerId])
+  @@index([status])
+  @@index([validUntil])
+  @@index([status, validUntil])
+  @@index([companyId, status, createdAt(sort: Desc)])
+  @@map("offers")
+}
+
+model Order {
+  id          String      @id @default(uuid())
+  orderNo     String      @unique
+  offerId     String?
+  companyId   String
+  customerId  String
+  items       Json
+  subtotal    Decimal     @db.Decimal(10, 2)
+  tax         Decimal     @db.Decimal(10, 2)
+  total       Decimal     @db.Decimal(10, 2)
+  currency    String      @default("EUR")
+  status      OrderStatus @default(DRAFT)
+  notes       String?     @db.Text
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  company     Company     @relation("OrderCompany", fields: [companyId], references: [id], onDelete: Cascade)
+  customer    Company     @relation("OrderCustomer", fields: [customerId], references: [id], onDelete: Cascade)
+  offer       Offer?      @relation(fields: [offerId], references: [id], onDelete: SetNull)
+  deliveries  Delivery[]
+
+  @@index([companyId])
+  @@index([customerId])
+  @@index([offerId])
+  @@index([status])
+  @@map("orders")
+}
+
+model Delivery {
+  id            String         @id @default(uuid())
+  deliveryNo    String         @unique
+  orderId       String
+  deliveryDate  DateTime
+  items         Json
+  status        DeliveryStatus @default(PREPARED)
+  notes         String?        @db.Text
+  signedBy      String?
+  signedAt      DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  order         Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  invoices      Invoice[]
+
+  @@index([orderId])
+  @@index([status])
+  @@index([deliveryDate])
+  @@map("deliveries")
+}
+
+model Invoice {
+  id          String        @id @default(uuid())
+  invoiceNo   String        @unique
+  companyId   String
+  customerId  String
+  deliveryId  String?
+  items       Json
+  subtotal    Decimal       @db.Decimal(10, 2)
+  tax         Decimal       @db.Decimal(10, 2)
+  total       Decimal       @db.Decimal(10, 2)
+  currency    String        @default("EUR")
+  type        InvoiceType   @default(ISSUED)
+  status      InvoiceStatus @default(DRAFT)
+  issueDate   DateTime      @default(now())
+  dueDate     DateTime
+  paidAt      DateTime?
+  notes       String?       @db.Text
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  company     Company       @relation("InvoiceCompany", fields: [companyId], references: [id], onDelete: Cascade)
+  customer    Company       @relation("InvoiceCustomer", fields: [customerId], references: [id], onDelete: Cascade)
+  delivery    Delivery?     @relation(fields: [deliveryId], references: [id], onDelete: SetNull)
+
+  @@index([companyId])
+  @@index([customerId])
+  @@index([deliveryId])
+  @@index([type])
+  @@index([status])
+  @@index([dueDate])
+  @@index([status, dueDate])
+  @@index([type, status, issueDate(sort: Desc)])
+  @@map("invoices")
+}
+

@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  meilisearch:
+    image: getmeili/meilisearch:v1.10
+    container_name: collector-meilisearch
+    ports:
+      - "7700:7700"
+    environment:
+      MEILI_MASTER_KEY: masterKey
+      MEILI_ENV: development
+    volumes:
+      - meilisearch_data:/meili_data
+    restart: unless-stopped
+
+  nats:
+    image: nats:latest
+    container_name: collector-nats
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    restart: unless-stopped
+
+volumes:
+  meilisearch_data:

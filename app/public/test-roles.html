@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Role-Based Dashboards</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .button-group {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        button {
+            padding: 15px 25px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .btn-admin {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white;
+        }
+        .btn-manager {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+        }
+        .btn-customer {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        .btn-guest {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            color: white;
+        }
+        .icon {
+            font-size: 24px;
+        }
+        .info {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .info h3 {
+            margin: 0 0 10px 0;
+            color: #0369a1;
+        }
+        .info p {
+            margin: 5px 0;
+            color: #0c4a6e;
+            font-size: 14px;
+        }
+        .current-role {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎭 Role-Based Dashboard Tester</h1>
+        <p class="subtitle">Test različite tipove korisnika - postavi role i otvori dashboard</p>
+        
+        <div class="current-role" id="currentRole">
+            Current Role: <span id="roleDisplay">Not Set (Guest)</span>
+        </div>
+
+        <div class="button-group">
+            <button class="btn-admin" onclick="setRole('admin')">
+                <span class="icon">🔧</span>
+                <div>
+                    <div><strong>Admin Dashboard</strong></div>
+                    <small>Full system access</small>
+                </div>
+            </button>
+
+            <button class="btn-manager" onclick="setRole('manager')">
+                <span class="icon">👔</span>
+                <div>
+                    <div><strong>Manager Dashboard</strong></div>
+                    <small>Team & project management</small>
+                </div>
+            </button>
+
+            <button class="btn-customer" onclick="setRole('employee')">
+                <span class="icon">👤</span>
+                <div>
+                    <div><strong>Employee Dashboard</strong></div>
+                    <small>Standard employee access</small>
+                </div>
+            </button>
+
+            <button class="btn-guest" onclick="setRole('guest')">
+                <span class="icon">🚪</span>
+                <div>
+                    <div><strong>Guest (Login Page)</strong></div>
+                    <small>Not authenticated</small>
+                </div>
+            </button>
+        </div>
+
+        <div class="info">
+            <h3>ℹ️ Kako koristiti:</h3>
+            <p>1. Klikni na dugme da postaviš role</p>
+            <p>2. Automatski ćeš biti redirect-ovan na odgovarajući dashboard</p>
+            <p>3. Middleware će automatski zaštititi rute based on role</p>
+        </div>
+    </div>
+
+    <script>
+        // Display current role on load
+        window.onload = function() {
+            updateRoleDisplay();
+        };
+
+        function setRole(role) {
+            if (role === 'guest') {
+                // Clear role cookie
+                document.cookie = "user_role=; path=/; max-age=0";
+                alert('Role cleared! Redirecting to login page...');
+            } else {
+                // Set role cookie
+                document.cookie = `user_role=${role}; path=/; max-age=86400`;
+                alert(`Role set to: ${role.toUpperCase()}!\n\nRedirecting to ${role} dashboard...`);
+            }
+            
+            // Redirect to home page (middleware will handle routing)
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 1000);
+        }
+
+        function updateRoleDisplay() {
+            const cookies = document.cookie.split(';');
+            let role = 'Not Set (Guest)';
+            
+            for (let cookie of cookies) {
+                const [name, value] = cookie.trim().split('=');
+                if (name === 'user_role') {
+                    role = value.toUpperCase();
+                    break;
+                }
+            }
+            
+            document.getElementById('roleDisplay').textContent = role;
+        }
+    </script>
+</body>
+</html>
+

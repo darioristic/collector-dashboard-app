@@ -1,5 +1,39 @@
+# Dependencies
 node_modules/
-.bun/
+**/node_modules/
+
+# Build outputs
 .next/
+.bun/
+dist/
+build/
+
+# Environment
 .env
+.env.local
+.env*.local
+
+# OS files
 .DS_Store
+Thumbs.db
+
+# Lock files (generated automatically)
+*.lock
+bun.lock
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Testing
+coverage/
+.nyc_output/
